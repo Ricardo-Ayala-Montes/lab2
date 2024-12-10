@@ -1,0 +1,291 @@
+openapi: 3.0.0
+info:
+  title: E-Commerce API
+  description: API para el manejo de usuarios, ordenes, y el soporte a usuarios a través de la creación de tickets en un sistema e-commerce.
+  version: 1.0.0
+servers:
+  - url: https://ricardoayalam.Lab8.com/v1
+    description: Development API
+tags:
+  - name: Users
+    description: Operación relacionada con el manejo de usuarios
+  - name: Orders
+    description: Operación relacionada con la creación y consulta de ordenes
+  - name: Tickets
+    description: Operación relacionada a la creación y consulta de tickets de soporte
+paths:
+  /users:
+    post:
+      summary: Create a new user account
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Ricardo Ayala
+                email:
+                  type: string
+                  example: ricardoayalam@email.com
+                password:
+                  type: string
+                  example: Password0
+                address:
+                  type: string
+                  example: Calle 1
+                phone:
+                  type: string
+                  example: +52 43 58 05 04
+      responses:
+        '201':
+          description: User account created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: alejandro yee
+                  email:
+                    type: string
+                    example: yee@email.com
+                  status:
+                    type: string
+                    example: Account created successfully
+        '400':
+          description: Bad Request - Missing or invalid parameters
+        '409':
+          description: Conflict - Email is already in use
+  /users/{id}:
+    get:
+      summary: Get details of a specific user
+      operationId: getUser
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the user
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: Ricardo Ayala
+                  email:
+                    type: string
+                    example: ricardoayalam@mail.com
+        '404':
+          description: User not found
+  /orders:
+    post:
+      summary: Create a new order
+      operationId: createOrder
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                        example: 101
+                      quantity:
+                        type: integer
+                        example: 2
+                      price:
+                        type: number
+                        format: float
+                        example: 29.99
+                status:
+                  type: string
+                  example: pending
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1001
+                  userId:
+                    type: integer
+                    example: 1
+                  status:
+                    type: string
+                    example: pending
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productId:
+                          type: integer
+                          example: 101
+                        quantity:
+                          type: integer
+                          example: 2
+                        price:
+                          type: number
+                          format: float
+                          example: 29.99
+        '400':
+          description: Bad Request
+  /orders/{id}:
+    get:
+      summary: Get details of a specific order
+      operationId: getOrder
+      tags:
+        - Orders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the order
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1001
+                  userId:
+                    type: integer
+                    example: 1
+                  status:
+                    type: string
+                    example: pending
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productId:
+                          type: integer
+                          example: 101
+                        quantity:
+                          type: integer
+                          example: 2
+                        price:
+                          type: number
+                          format: float
+                          example: 29.99
+        '404':
+          description: Order not found
+  /tickets:
+    post:
+      summary: Create a customer support ticket
+      operationId: createTicket
+      tags:
+        - Tickets
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: integer
+                  example: 1
+                issue:
+                  type: string
+                  example: The order didn't arrive on time
+      responses:
+        '201':
+          description: Ticket created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 101
+                  userId:
+                    type: integer
+                    example: 1
+                  status:
+                    type: string
+                    example: open
+                  issue:
+                    type: string
+                    example: The order didn't arrive on time
+        '400':
+          description: Bad Request - Missing or invalid parameters
+  /tickets/{id}:
+    get:
+      summary: Get the status of a customer support ticket
+      operationId: getTicket
+      tags:
+        - Tickets
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the ticket
+      responses:
+        '200':
+          description: Ticket details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 101
+                  userId:
+                    type: integer
+                    example: 1
+                  status:
+                    type: string
+                    example: open
+                  issue:
+                    type: string
+                    example: The order didn't arrive on time
+        '404':
+          description: Ticket not found
